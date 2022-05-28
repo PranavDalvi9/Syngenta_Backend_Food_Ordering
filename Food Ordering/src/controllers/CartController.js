@@ -1,12 +1,12 @@
 const express = require("express");
-const Dishes = require("../modals/dishesModal");
+const Cart = require("../modals/cartModal");
 
 const router = express.Router();
 
 router.post("", async (req, res) => {
   try {
     console.log(req.body);
-    const data = await Dishes.create(req.body);
+    const data = await Cart.create(req.body);
     return res.send(data);
   } catch (error) {
     return res.send(500).send({ message: error.message });
@@ -17,9 +17,9 @@ router.post("", async (req, res) => {
 
 router.get("", async (req, res) => {
   try {
-    console.log("query" , req.query)
-    const data = await Dishes.find().lean().exec();
-    // console.log(data);
+    const data = await Cart.find().populate({path: "dishId", select:["_id","name", "location" , "category"]}).lean().exec();
+    console.log(data);
+    
     return res.send(data);
   } catch (error) {
     return res.send(error);

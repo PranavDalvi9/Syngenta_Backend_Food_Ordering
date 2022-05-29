@@ -17,9 +17,17 @@ router.post("", async (req, res) => {
 
 router.get("", async (req, res) => {
   try {
+
     console.log("query" , req.query)
     const data = await Dishes.find().populate({path :"resturant", select:["_id" ,"resturant"]}).lean().exec(); 
-    // console.log(data);
+
+    // http://localhost:2348/dishes?hotel=6292292db89c2967f7bb06c2&location=Dadar
+    if(req.query.hotel && req.query.location){
+      const filter1 = data.filter((e) => e.resturant._id == req.query.hotel);
+      const locationfilter = filter1.filter((e) => e.location == req.query.location)
+      return res.send(locationfilter);
+    }
+    
     return res.send(data);
   } catch (error) {
     return res.send(error);
